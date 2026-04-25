@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Labelog
 
-## Getting Started
+Labelog は研究室メンバー限定のグルメ共有 Web アプリである．食べログのように近隣のお店情報やレビュー・写真を投稿・共有できる．Google アカウントによる仮登録と管理者承認制を採用しており，グループ外からはアクセスできないクローズドなサービスとして運用する．
 
-First, run the development server:
+## 技術スタック
+
+| カテゴリ | 技術 |
+|--------|------|
+| フロントエンド | Next.js 16 (App Router) |
+| 言語 | TypeScript |
+| スタイリング | Tailwind CSS v4 |
+| UI コンポーネント | shadcn/ui |
+| フォーム管理 | React Hook Form + Zod |
+| 認証 | Firebase Authentication |
+| データベース | Cloud Firestore |
+| 画像ストレージ | Cloudinary |
+| ホスティング | Vercel |
+| パッケージ管理 | pnpm |
+
+## 前提条件
+
+- Node.js 20.9+
+- pnpm 10+
+- Googleアカウント（Firebase・Vercel・Cloudinaryの管理用）
+- 各サービスのアカウント登録済みであること
+  - [Firebase](https://firebase.google.com)
+  - [Vercel](https://vercel.com)
+  - [Cloudinary](https://cloudinary.com)
+
+## セットアップ
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+git clone https://github.com/bear-KU/Labelog.git
+cd labelog
+pnpm install
+cp .env.local.example .env.local  # 環境変数を設定
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+開発サーバーが起動したら [http://localhost:3000](http://localhost:3000) をブラウザで開く．
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 環境変数
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| 変数名 | 説明 |
+|-------|------|
+| NEXT_PUBLIC_FIREBASE_API_KEY | Firebase API キー |
+| NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN | Firebase 認証ドメイン |
+| NEXT_PUBLIC_FIREBASE_PROJECT_ID | Firebase プロジェクト ID |
+| NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET | Firebase Storage バケット名 |
+| NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID | Firebase メッセージング送信者 ID |
+| NEXT_PUBLIC_FIREBASE_APP_ID | Firebase アプリ ID |
+| NEXT_PUBLIC_FIREBASE_MEASUREMENTID | Firebase Google アナリティクス用（任意） |
+| CLOUDINARY_CLOUD_NAME | Cloudinary クラウド ID |
+| CLOUDINARY_API_KEY | Cloudinary API キー |
+| CLOUDINARY_API_SECRET | Cloudinary API シークレット |
 
-## Learn More
+## ドキュメント
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Design Doc](docs/DESIGN_DOC.md)
