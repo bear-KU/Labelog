@@ -174,13 +174,13 @@ Cloudinary は 25GB の無料枠・プライベート設定が無料から利用
 ### Branch strategy
 
 - `main`：本番環境．安定した完成品のみ置く
-- `develop`：開発環境．feat ブランチで作った機能をここにまとめる
-- `feat/xxx`：機能単位で切る作業ブランチ
+- `develop`：開発環境．feature ブランチで作った機能をここにまとめる
+- `feature/xxx`：機能単位で切る作業ブランチ
 
 開発の流れは以下の通りとする．
 
 ```
-feat/xxx → develop → main
+feature/xxx → develop → main
 （作業）   （統合）   （本番）
 ```
 
@@ -209,3 +209,5 @@ feat/xxx → develop → main
 | 日付 | バージョン | 変更内容 |
 |------|-----------|---------|
 | 2026-04-26 | 0.1.0 | 初版作成 |
+| 2026-04-26 | 0.1.1 | Branch strategy の修正 |
+
