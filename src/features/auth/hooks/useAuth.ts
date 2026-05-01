@@ -19,8 +19,11 @@ export const useAuth = (): AuthState => {
 
     const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
+        if (unsubscribeSnapshot) {
+          unsubscribeSnapshot();
+        }
+        
         const docRef = doc(db, "users", firebaseUser.uid).withConverter(userConverter);
-
 
         unsubscribeSnapshot = onSnapshot(
           docRef,
