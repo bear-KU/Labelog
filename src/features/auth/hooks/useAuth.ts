@@ -15,7 +15,7 @@ export const useAuth = (): AuthState => {
   });
 
   useEffect(() => {
-    let unsubscribeSnapshot: () => void;
+    let unsubscribeSnapshot: (() => void) | undefined = undefined;
 
     const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
