@@ -95,6 +95,7 @@ Firestore を使用する．以下の5つのコレクションで構成する．
 | averageRating | number \| null | 平均評価 |
 | reviewCount | number | レビュー数 |
 | thumbnailPublicId | string \| null | サムネイル画像の public ID |
+| isDeleted | boolean | 論理削除フラグ |
 | createdAt | timestamp | 登録日時 |
 | updatedAt | timestamp | 最終更新日時 |
 
@@ -210,4 +211,4 @@ feature/xxx → develop → main
 |------|-----------|---------|
 | 2026-04-26 | 0.1.0 | 初版作成 |
 | 2026-04-26 | 0.1.1 | Branch strategy の修正 |
-
+| 2026-05-01 | 0.2.0 | restaurants コレクションのフィールドを追加 |
