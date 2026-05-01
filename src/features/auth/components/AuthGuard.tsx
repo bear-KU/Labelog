@@ -39,11 +39,17 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     return null;
   }
 
+  // =========================================================
+  // リダイレクト完了までのフリッカを防止するガード
+  // =========================================================
   // ログインしておらず，ログイン画面以外にいる場合
   if (!user && pathname !== "/login") return null;
 
   // 承認されておらず，承認待ち画面以外にいる場合
   if (user && !user.isApproved && pathname !== "/pending") return null;
+
+  // 承認されており，ログイン画面，承認待ち画面にいる場合
+  if (user && user.isApproved && (pathname === "/login" || pathname === "/pending")) return null;
 
   return <>{children}</>;
 };
