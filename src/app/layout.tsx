@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Figtree, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { AuthProvider, AuthGuard } from "@/features/auth"
 
 const figtree = Figtree({
   subsets:['latin'],
@@ -29,7 +30,13 @@ export default function RootLayout({
       lang="ja"
       className={cn("h-full", "antialiased", "font-sans", figtree.variable, notoSansJP.variable)}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <AuthProvider>
+          <AuthGuard>
+            {children}
+          </AuthGuard>
+        </AuthProvider>
+      </body>
     </html>
   );
 }
