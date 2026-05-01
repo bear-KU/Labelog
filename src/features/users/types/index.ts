@@ -7,7 +7,7 @@ export type User = {
   name: string;
   email: string;
   gender: Gender | null;
-  birthday: Date | null;
+  birthDate: Date | null;
   isApproved: boolean;
   role: UserRole;
   createdAt: Date;

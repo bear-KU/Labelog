@@ -1,6 +1,6 @@
 import { auth, db } from "@/lib/firebase";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import type { User } from "@/features/users/types";
 import { userConverter } from "@/features/auth/services/converter";
 
@@ -15,16 +15,16 @@ export const signInWithGoogle = async () => {
     const userDocSnap = await getDoc(userDocRef);
 
     if (!userDocSnap.exists()) {
-      const newUser: User = {
+      const newUser = {
         uid: firebaseUser.uid,
         name: firebaseUser.displayName || "名無し",
         email: firebaseUser.email || "",
         gender: null,
-        birthday: null,
+        birthDate: null,
         isApproved: false,
-        role: "member",
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        role: "member" as const,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
       };
       await setDoc(userDocRef, newUser);
     }
