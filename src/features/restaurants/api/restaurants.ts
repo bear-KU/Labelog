@@ -53,4 +53,3 @@ export const deleteRestaurant = async (id: string): Promise<void> => {
     updatedAt: serverTimestamp(),
   });
 };
-  
