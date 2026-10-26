@@ -1,7 +1,7 @@
-import type { User } from "@/features/users/types";
+import type { AuthUser } from "@/features/users/types";
 
 export type AuthState = {
-  user: User | null;
+  user: AuthUser | null;
   loading: boolean;
   error: string | null;
 };

@@ -1,46 +1,24 @@
-import { auth, db } from "@/lib/firebase";
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import type { User } from "@/features/users/types";
-import { userConverter } from "@/features/auth/services/converter";
+"use client";
 
-const provider = new GoogleAuthProvider();
+import { neonAuthClient } from "@/features/auth/client";
 
 export const signInWithGoogle = async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const firebaseUser = result.user;
+  const { error } = await neonAuthClient.signIn.social({
+    provider: "google",
+    callbackURL: window.location.origin + "/",
+  });
 
-    const userDocRef = doc(db, "users", firebaseUser.uid).withConverter(userConverter);
-    const userDocSnap = await getDoc(userDocRef);
-
-    if (!userDocSnap.exists()) {
-      const newUser = {
-        uid: firebaseUser.uid,
-        name: firebaseUser.displayName || "名無し",
-        email: firebaseUser.email || "",
-        gender: null,
-        birthDate: null,
-        isApproved: false,
-        role: "member" as const,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      };
-      await setDoc(userDocRef, newUser);
-    }
-
-    return result;
-  } catch (error) {
-    console.error("Error signing in with Google:", error);
-    throw error;
+  if (error) {
+    throw new Error(error.message || "Failed to sign in with Google");
   }
 };
 
 export const signOutFromGoogle = async () => {
-  try {
-    return await signOut(auth);
-  } catch (error) {
-    console.error("Error signing out from Google:", error);
-    throw error;
+  const { error } = await neonAuthClient.signOut();
+
+  if (error) {
+    throw new Error(error.message || "Failed to sign out from Google");
   }
+
+  window.location.assign("/login");
 };
