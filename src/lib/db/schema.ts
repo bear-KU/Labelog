@@ -2,12 +2,14 @@ import { sql } from "drizzle-orm";
 import { 
   boolean,
   date,
+  jsonb,
   pgEnum,
   pgTable,
   text,
   timestamp,
   uuid
 } from "drizzle-orm/pg-core";
+import type { BusinessHours } from "@/features/restaurants/schemas/restaurant";
 
 export const genderEnum = pgEnum("gender", ["male", "female", "other"]);
 
@@ -30,8 +32,8 @@ export const restaurants = pgTable("restaurants", {
   address: text("address"),
   genre: text("genre").array().notNull().default(sql`ARRAY[]::text[]`),
   tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
-  businessHours: text("business_hours"),
-  closedDays: text("closed_days"),
+  businessHours: jsonb("business_hours").$type<BusinessHours>(),
+  businessHoursNote: text("business_hours_note"),
   url: text("url"),
   thumbnailPublicId: text("thumbnail_public_id"),
   isDeleted: boolean("is_deleted").notNull().default(false),
