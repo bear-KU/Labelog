@@ -1,11 +1,36 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "@/lib/firebase";
+
 import { AuthState } from "@/features/auth/types";
-import { userConverter } from "@/features/auth/services/converter";
+import { AuthUser } from "@/features/users/types";
+
+async function fetchAuthUser(signal: AbortSignal): Promise<AuthUser | null> {
+  let response = await fetch("/api/users/me", {
+    method: "GET",
+    cache: "no-store",
+    signal,
+  });
+
+  if (response.status === 404) {
+    response = await fetch("/api/users/me", {
+      method: "POST",
+      cache: "no-store",
+      signal,
+    });
+  }
+
+  if (response.status === 401) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to retrieve authenticated user: ${response.status}`);
+  }
+
+  const user: AuthUser = await response.json();
+  return user;
+}
 
 export const useAuth = (): AuthState => {
   const [state, setState] = useState<AuthState>({
@@ -15,60 +40,60 @@ export const useAuth = (): AuthState => {
   });
 
   useEffect(() => {
-    let unsubscribeSnapshot: (() => void) | undefined = undefined;
+    const controller = new AbortController();
+    let isFetching = false;
 
-    const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        if (unsubscribeSnapshot) {
-          unsubscribeSnapshot();
+    async function refreshAuth() {
+      if (isFetching || controller.signal.aborted) {
+        return;
+      }
+
+      isFetching = true;
+
+      try {
+        const user = await fetchAuthUser(controller.signal);
+
+        if (controller.signal.aborted) {
+          return;
         }
-        
-        const docRef = doc(db, "users", firebaseUser.uid).withConverter(userConverter);
 
-        unsubscribeSnapshot = onSnapshot(
-          docRef,
-          (docSnap) => {
-            if (docSnap.exists()) {
-              setState({
-                user: docSnap.data(),
-                loading: false,
-                error: null,
-              });
-            } else {
-              setState({
-                user: null,
-                loading: false,
-                error: null,
-              });
-            }
-          },
-          (e) => {
-            console.error(e);
-            setState({
-              user: null,
-              loading: false,
-              error: "ユーザ情報の取得に失敗しました",
-            });
-          }
-        );
-      } else {
         setState({
-          user: null,
+          user,
           loading: false,
           error: null,
         });
-
-        if (unsubscribeSnapshot) {
-          unsubscribeSnapshot();
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return;
         }
+
+        console.error(`Failed to retrieve authenticated user: ${error}`);
+
+        setState({
+          user: null,
+          loading: false,
+          error: "ユーザ情報の取得に失敗しました",
+        });
+      } finally {
+        isFetching = false;
       }
-    });
+    }
+
+    function handleActive() {
+      if (document.visibilityState === "visible") {
+        void refreshAuth();
+      }
+    }
+
+    void refreshAuth();
+
+    window.addEventListener("focus", handleActive);
+    document.addEventListener("visibilitychange", handleActive);
 
     return () => {
-      unsubscribeAuth();
-      if (unsubscribeSnapshot) {
-        unsubscribeSnapshot();
-      }
+      controller.abort();
+      window.removeEventListener("focus", handleActive);
+      document.removeEventListener("visibilitychange", handleActive);
     };
   }, []);
 

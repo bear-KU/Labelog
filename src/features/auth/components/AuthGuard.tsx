@@ -2,20 +2,21 @@
 
 import { useAuthContext } from "@/features/auth/providers/AuthProvider";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 
-export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuthContext();
+export const AuthGuard = ({ children }: { children: ReactNode }) => {
+  const { user, loading, error } = useAuthContext();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || error) return;
 
     // ログインしていない場合
     if (!user) {
       if (pathname !== "/login") {
-        router.push("/login");
+        router.replace("/login");
       }
       return;
     }
@@ -23,20 +24,35 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     // 承認待ちの場合
     if (!user.isApproved) {
       if (pathname !== "/pending") {
-        router.push("/pending");
+        router.replace("/pending");
       }
       return;
     }
 
     // ログインしていて承認されている場合
     if (pathname === "/login" || pathname === "/pending") {
-      router.push("/");
+      router.replace("/");
     }
-  }, [user, loading, pathname, router]);
+  }, [user, loading, error, pathname, router]);
 
   // ローディング中は何も表示しない
   if (loading) {
     return null;
+  }
+
+  if (error) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
+        <p role="alert">{error}</p>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => window.location.reload()}
+        >
+          再読み込み
+        </Button>
+      </main>
+    );
   }
 
   // =========================================================
@@ -49,7 +65,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   if (user && !user.isApproved && pathname !== "/pending") return null;
 
   // 承認されており，ログイン画面，承認待ち画面にいる場合
-  if (user && user.isApproved && (pathname === "/login" || pathname === "/pending")) return null;
+  if (user?.isApproved && (pathname === "/login" || pathname === "/pending")) return null;
 
   return <>{children}</>;
 };

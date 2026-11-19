@@ -1,4 +1,4 @@
-export { signInWithGoogle, signOutFromGoogle } from "@/features/auth/services/auth";
+export { signInWithGoogle, signOutFromGoogle } from "@/features/auth/services/authentication";
 export { useAuth } from "@/features/auth/hooks/useAuth";
 export type { AuthState } from "@/features/auth/types";
 export { AuthProvider, useAuthContext } from "@/features/auth/providers/AuthProvider";

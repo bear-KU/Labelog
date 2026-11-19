@@ -1,7 +1,16 @@
-ignoredBuiltDependencies:
-  - '@firebase/util'
-  - protobufjs
-  - sharp
-  - unrs-resolver
-onlyBuiltDependencies:
-  - msw
+allowBuilds:
+  esbuild: true
+  msw: true
+  core-js: false
+  sharp: false
+  unrs-resolver: false
+
+overrides:
+  # Neon SDK の依存バージョンに揃えるための暫定対応
+  # https://github.com/neondatabase/neon-js/issues/212
+  "@daveyplate/better-auth-ui@3.4.0>@better-auth/api-key": "1.7.6"
+  "@daveyplate/better-auth-ui@3.4.0>better-call": "1.4.0"
+
+  # 公開パッケージに残っている peer 依存指定を補正
+  # https://github.com/neondatabase/neon-js/issues/274
+  "@neondatabase/auth-ui@0.4.0-beta>@neondatabase/auth": "0.7.0-beta"

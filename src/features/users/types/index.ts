@@ -1,15 +1,6 @@
-export type Gender = "male" | "female" | "other";
+import type { users } from "@/lib/db/schema";
 
-export type UserRole = "admin" | "member";
-
-export type User = {
-  uid: string;
-  name: string;
-  email: string;
-  gender: Gender | null;
-  birthDate: Date | null;
-  isApproved: boolean;
-  role: UserRole;
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type AuthUser = Pick<
+  typeof users.$inferSelect,
+  "id" | "name" | "isApproved" | "role"
+>;
